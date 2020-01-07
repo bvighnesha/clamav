@@ -2,20 +2,20 @@ install:
 	go install 
 bin:
 	@mkdir -p releases
-	go get -v . && go build -o releases/mav
+	go get -v . && go build -o releases/clamav
 
 test:
 	@go get -v . 
 	@go vet && go test -v .
 
 container: build
-	@docker build -f Dockerfile.release.yaml -t vighnesh.org/mav:latest .
+	@docker build -f Dockerfile.release.yaml -t vighnesh.org/clamav:latest .
 
 container-onbuild:
-	@docker build -t vighnesh.org/mav:onbuild .
+	@docker build -t vighnesh.org/clamav:onbuild .
 
 push: container
-	@docker push vighnesh.org/mav
+	@docker push vighnesh.org/clamav
 
 build: test
 	go get -v . 														&& \

@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
-	"vighnesh.org/mav/clamav"
+	"vighnesh.org/clamav/clamav"
 )
 
 type ClamAV struct {

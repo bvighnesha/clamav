@@ -3,11 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/dutchcoders/go-clamd"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"strings"
 	"time"
+	"vighnesh.org/clamav/clamav"
 )
 
 type ClamAV struct {
@@ -21,7 +21,7 @@ func (controller ClamAV) Index(w http.ResponseWriter, r *http.Request, _ httprou
 func (controller ClamAV) Health(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 
-	clam := clamd.NewClamd(controller.clamUrl)
+	clam := clamav.NewClamd(controller.clamUrl)
 	err := clam.Ping()
 	if err == nil {
 		fmt.Fprint(w, "ok")
@@ -33,10 +33,10 @@ func (controller ClamAV) Health(w http.ResponseWriter, r *http.Request, _ httpro
 func (controller ClamAV) Version(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 
-	clam := clamd.NewClamd(controller.clamUrl)
+	clam := clamav.NewClamd(controller.clamUrl)
 	v, _ := clam.Version()
 	version := <-v
-	response, _ := json.Marshal(Response{AV_Version: version.Raw})
+	response, _ := json.Marshal(Response{AVVersion: version.Raw})
 	fmt.Fprint(w, string(response))
 }
 
@@ -52,7 +52,7 @@ func (controller ClamAV) Scan(w http.ResponseWriter, r *http.Request, ps httprou
 
 	defer r.Body.Close()
 	if name != "" {
-		clam := clamd.NewClamd(controller.clamUrl)
+		clam := clamav.NewClamd(controller.clamUrl)
 		chanFoo := make(chan bool)
 
 		ch, _ := clam.ScanStream(file, chanFoo)
@@ -61,7 +61,7 @@ func (controller ClamAV) Scan(w http.ResponseWriter, r *http.Request, ps httprou
 		if x.Status == "FOUND" {
 			detected = true
 		}
-		rsp, _ := json.Marshal(Response{File: name, Detected: detected, Malware: x.Description})
+		rsp, _ := json.Marshal(Response{File: name, Detected: &detected, Malware: x.Description})
 		time.Sleep(2 * time.Second)
 		fmt.Fprint(w, string(rsp))
 	} else {
@@ -70,16 +70,16 @@ func (controller ClamAV) Scan(w http.ResponseWriter, r *http.Request, ps httprou
 }
 
 func (controller ClamAV) Stats(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	clam := clamd.NewClamd(controller.clamUrl)
+	clam := clamav.NewClamd(controller.clamUrl)
 	stats, _ := clam.Stats()
 	response, _ := json.Marshal(stats)
 	fmt.Fprint(w, string(response))
 }
 
 type Response struct {
-	File      *string `json:"file,omitempty"`
-	Detected  *bool   `json:"detected,omitempty"`
-	Malware   *string `json:"malware,omitempty"`
-	AVVersion *string `json:"av_version,omitempty"`
-	Metadata  *string `json:"metadata,omitempty"`
+	File      string `json:"file,omitempty"`
+	Detected  *bool  `json:"detected,omitempty"`
+	Malware   string `json:"malware,omitempty"`
+	AVVersion string `json:"av_version,omitempty"`
+	Metadata  string `json:"metadata,omitempty"`
 }

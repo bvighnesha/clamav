@@ -13,7 +13,7 @@ func main() {
 	clamServer := os.Getenv("CLAM_SERVER")
 	if clamServer == "" {
 		clamServer = "0.0.0.0"
-		log.Println("Missing environment host for the clam server. Please set CLAM_SERVER OR default", clamServer,"is used.")
+		log.Println("Missing environment host for the clam server. Please set CLAM_SERVER OR default", clamServer, "is used.")
 	}
 	clamPort := os.Getenv("CLAM_PORT")
 	if clamPort == "" {
