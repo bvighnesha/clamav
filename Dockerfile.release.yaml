@@ -1,0 +1,4 @@
+FROM scratch
+COPY releases/mav-linux /
+ENTRYPOINT ["/mav-linux"]
+EXPOSE 8000

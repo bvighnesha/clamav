@@ -1,0 +1,6 @@
+clam:
+  image: mk0x/docker-clamav:alpine
+  environment:
+    - FRESHCLAM_UPDATE=2
+  ports :
+    - "3310:3310"
