@@ -11,7 +11,7 @@
 4) Run executable created from above command
 5) Download `eicar` sample virus file from `https://secure.eicar.org/eicarcom2.zip`
 6) Run the following `CURL` command
-   `curl -X POST -i -F "file=@/Users/bojja/Downloads/go1.13.darwin-amd64.pkg" localhost:8000/scan`
+   `curl -X POST -i -F "file=@eicarcom2.zip" localhost:8000/scan`
 
 Sample Response
 
